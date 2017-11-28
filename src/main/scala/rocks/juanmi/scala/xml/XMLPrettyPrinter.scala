@@ -1,5 +1,7 @@
 package rocks.juanmi.scala.xml
 
+import scala.language.reflectiveCalls
+
 /*
  * Copyright Juan Miguel Cejuela (@juanmirocks)
  *
@@ -116,8 +118,8 @@ class XMLPrettyPrinter(indent: Int, pre: String*) {
     def whitespaceTrim(x: String) = x.trim
     val preformatted = inPre || node.isInstanceOf[Group] || preSet.contains(node.label) //note, group.label fails
     def ::(x: String): Unit = out write x
-    def :::(x: Char): Unit = out write x
-    def __ : Unit = (0 until curIndent).foreach(_ => :::(' '))
+    def :::(x: Char): Unit = out write x.toString
+    def __(): Unit = (0 until curIndent).foreach(_ => :::(' '))
     def printNodes(nodes: Seq[Node], newScope: NamespaceBinding, newIndent: Int): Unit =
       nodes.foreach(n => print(n, newScope, newIndent, preformatted))
 
@@ -173,6 +175,7 @@ class XMLPrettyPrinter(indent: Int, pre: String*) {
       n nameToString sb
       n.attributes buildString sb
       sb append />
+      () // return Unit explicitly
     }
     sbToString(mkLeaf)
   }
@@ -184,6 +187,7 @@ class XMLPrettyPrinter(indent: Int, pre: String*) {
       n.attributes buildString sb
       n.scope.buildString(sb, pScope)
       sb append >
+      () // return Unit explicitly
     }
     sbToString(mkStart)
   }
@@ -193,6 +197,7 @@ class XMLPrettyPrinter(indent: Int, pre: String*) {
       sb append </
       n nameToString sb
       sb append >
+      () // return Unit explicitly
     }
     sbToString(mkEnd)
   }
@@ -252,11 +257,13 @@ class XMLPrettyPrinter(indent: Int, pre: String*) {
     override def write(value: String): Unit =
       if (value != null) {
         builder.append(value);
+        ()
       }
 
     def write(value: Array[Char], offset: Int, length: Int): Unit =
       if (value != null) {
         builder.appendAll(value, offset, length);
+        () // return Unit explicitly
       }
 
     def getBuilder: StringBuilder = builder

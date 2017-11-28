@@ -106,12 +106,12 @@ class XMLPrettyPrinterSuite extends FunSuite {
 
     withTmpFile(resource) { f =>
       printer.writeToFile(f, docType)(node)
-      val prettyNode = XMLloadUTF8(f)
+      //val prettyNode = XMLloadUTF8(f)
     }
 
     withTmpFile("pres_"+resource) { f =>
       printer.writeToFile(f, docType)(node)
-      val prettyNode = XMLloadUTF8(f)
+      //val prettyNode = XMLloadUTF8(f)
     }
   }
 
@@ -147,7 +147,7 @@ class XMLPrettyPrinterSuite extends FunSuite {
 
   def resourceFile(resource: String) = new File(classOf[XMLPrettyPrinterSuite].getResource("/"+resource).toURI)
 
-  def withTmpFile(name: String)(body: File => Unit) {
+  def withTmpFile(name: String)(body: File => Unit): Unit = {
     val tmpFile = java.io.File.createTempFile(classOf[XMLPrettyPrinter].getSimpleName()+"_test_"+name, ".xml")
     body(tmpFile)
     println(tmpFile.getAbsolutePath)
